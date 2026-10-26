@@ -26,7 +26,7 @@
                 </div>
             </div>
             <div class="flex space-x-2">
-                <button onclick="switchView('owner')" id="btn-owner" class="px-4 py-2 text-sm font-semibold rounded-lg bg-cyan-500 text-slate-955 transition shadow-lg shadow-cyan-500/20">
+                <button onclick="switchView('owner')" id="btn-owner" class="px-4 py-2 text-sm font-semibold rounded-lg bg-cyan-500 text-slate-950 transition shadow-lg shadow-cyan-500/20">
                     <i class="fa-solid fa-user-gear mr-1"></i> Panel Propietario
                 </button>
                 <button onclick="switchView('finder')" id="btn-finder" class="px-4 py-2 text-sm font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">
@@ -39,17 +39,17 @@
     <!-- Main Content -->
     <main class="max-w-4xl mx-auto p-4 w-full flex-grow my-6">
 
-        <!-- VISTA PROPIETARIO -->
+        <!-- VISTA PROPIETARIO (Registro Inicial) -->
         <div id="view-owner" class="space-y-6">
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
                 <h2 class="text-lg font-bold text-cyan-300 mb-2">
                     <i class="fa-solid fa-sliders mr-2"></i> Activación y Configuración de tu Llavero
                 </h2>
                 <p class="text-sm text-slate-400 mb-6">
-                    Ingresa tus datos de contacto alternativos. Estos datos se vincularán al número de serie único de tu placa Key-Spot de forma segura y anónima.
+                    Ingresa tus datos de contacto alternativos. Esta es la primera configuración (registro del llavero nuevo).
                 </p>
 
-                <form id="owner-form" onsubmit="generateKeyTag(event)" class="space-y-4">
+                <form id="owner-form" onsubmit="registerOwner(event)" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">ID de Llavero (Serie)</label>
@@ -74,7 +74,7 @@
 
                     <button type="submit" class="w-full mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold py-3 px-6 rounded-xl transition shadow-lg shadow-cyan-500/25 flex items-center justify-center space-x-2">
                         <i class="fa-solid fa-qrcode"></i>
-                        <span>Generar Mi Código QR Key-Spot</span>
+                        <span>Activar y Registrar Llavero</span>
                     </button>
                 </form>
             </div>
@@ -87,7 +87,7 @@
                     </span>
                     <h3 class="text-xl font-bold text-slate-100">Tu Placa Física Key-Spot</h3>
                     <p class="text-sm text-slate-400 max-w-sm">
-                        Este código QR ya está vinculado a tus datos. Imprímelo y colócalo en tu placa acrílica para proteger tus llaves.
+                        Este código QR ya está vinculado. Si lo vuelves a escanear, ahora abrirá directo la vista de rescate.
                     </p>
                     <div class="pt-2">
                         <span class="text-xs font-mono bg-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg border border-slate-800">
@@ -118,7 +118,7 @@
             </div>
         </div>
 
-        <!-- VISTA BUSCADOR (Buen Samaritano) -->
+        <!-- VISTA BUSCADOR (Buen Samaritano - Alerta) -->
         <div id="view-finder" class="hidden space-y-6">
             <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-cyan-500/30 rounded-2xl p-6 shadow-2xl text-center max-w-lg mx-auto">
                 <div class="w-16 h-16 bg-cyan-500/10 text-cyan-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-cyan-500/30">
@@ -126,7 +126,7 @@
                 </div>
                 <h2 class="text-xl font-bold text-slate-100 mb-1">¡Has encontrado unas llaves Key-Spot!</h2>
                 <p class="text-sm text-slate-400 mb-6">
-                    El dueño de este llavero configuró un sistema de aviso anónimo. No necesitas revelar tu identidad para ayudar a regresarlas.
+                    Este llavero ya está registrado. Envía un mensaje anónimo al propietario para coordinar la devolución.
                 </p>
 
                 <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-6 text-left space-y-2">
@@ -142,8 +142,8 @@
 
                 <form onsubmit="sendFinderMessage(event)" class="space-y-4 text-left">
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">¿Dónde las encontraste o cómo te contacta?</label>
-                        <textarea id="finder-message" rows="3" required placeholder="Ej. Las dejé en la cafetería con el encargado o escríbeme a mi número..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-slate-100 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition"></textarea>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">¿Dónde las encontraste o cómo te contactan?</label>
+                        <textarea id="finder-message" rows="3" required placeholder="Ej. Las dejé con el encargado de la cafetería o escríbeme..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-slate-100 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition"></textarea>
                     </div>
 
                     <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 px-6 rounded-xl transition shadow-lg shadow-emerald-500/25 flex items-center justify-center space-x-2">
@@ -161,15 +161,39 @@
         Key-Spot Project &bull; Plan de Desarrollo de Producto (Ixtapaluca, 2026)
     </footer>
 
-    <!-- Script de control interactivo -->
+    <!-- Script de control inteligente con Memoria Local -->
     <script>
-        let currentOwnerData = {
-            id: "KEY-9021",
-            name: "Miguel H.",
-            phone: "55 2395 6402",
-            email: "miguel@keyspot.local"
-        };
+        const tagId = "KEY-9021";
         let messagesLog = [];
+
+        // Al cargar la página, verificamos si este llavero ya fue registrado en este navegador
+        window.onload = function() {
+            const savedData = localStorage.getItem('keyspot_' + tagId);
+            const githubUrl = "https://mh6460285-cell.github.io/keyspot/?id=" + tagId;
+
+            // Generar QR inicial
+            const qrContainer = document.getElementById('qrcode');
+            new QRCode(qrContainer, {
+                text: githubUrl,
+                width: 130,
+                height: 130,
+                colorDark: "#020617",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            document.getElementById('preview-url-text').innerText = githubUrl;
+
+            if (savedData) {
+                // Si ya está registrado, mandamos directo al usuario a la vista de buscador / alerta
+                const ownerInfo = JSON.parse(savedData);
+                document.getElementById('finder-owner-name').innerText = ownerInfo.name;
+                document.getElementById('finder-tag-id').innerText = tagId;
+                switchView('finder');
+            } else {
+                // Si es virgen (primera vez), muestra el panel para registrarse
+                switchView('owner');
+            }
+        };
 
         function switchView(view) {
             const ownerView = document.getElementById('view-owner');
@@ -187,40 +211,26 @@
                 finderView.classList.remove('hidden');
                 btnFinder.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-cyan-500 text-slate-950 transition shadow-lg shadow-cyan-500/20";
                 btnOwner.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
-                
-                // Actualizar datos en vista buscador
-                document.getElementById('finder-owner-name').innerText = currentOwnerData.name;
-                document.getElementById('finder-tag-id').innerText = currentOwnerData.id;
             }
         }
 
-        function generateKeyTag(e) {
+        function registerOwner(e) {
             e.preventDefault();
-            currentOwnerData.id = document.getElementById('tag-id').value;
-            currentOwnerData.name = document.getElementById('owner-name').value;
-            currentOwnerData.phone = document.getElementById('owner-phone').value;
-            currentOwnerData.email = document.getElementById('owner-email').value;
+            const ownerData = {
+                id: tagId,
+                name: document.getElementById('owner-name').value,
+                phone: document.getElementById('owner-phone').value,
+                email: document.getElementById('owner-email').value
+            };
 
-            // Mostrar tarjeta de previsualización
+            // Guardar en la memoria local del navegador (simulando base de datos)
+            localStorage.setItem('keyspot_' + tagId, JSON.stringify(ownerData));
+
+            // Mostrar tarjeta de éxito con el QR listo
             const previewCard = document.getElementById('tag-preview-card');
             previewCard.classList.remove('hidden');
 
-            // URL real con GitHub Pages
-            const simulatedUrl = `https://mh6460285-cell.github.io/keyspot/?id=${currentOwnerData.id}`;
-            document.getElementById('preview-url-text').innerText = simulatedUrl;
-
-            // Limpiar QR anterior y generar uno nuevo con la URL real de GitHub
-            const qrContainer = document.getElementById('qrcode');
-            qrContainer.innerHTML = "";
-            
-            new QRCode(qrContainer, {
-                text: simulatedUrl,
-                width: 130,
-                height: 130,
-                colorDark: "#020617",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
+            alert("¡Llavero registrado con éxito! A partir de ahora, cualquier escaneo abrirá la vista de rescate.");
         }
 
         function sendFinderMessage(e) {
@@ -228,17 +238,19 @@
             const msgText = document.getElementById('finder-message').value;
             
             const newAlert = {
-                id: currentOwnerData.id,
+                id: tagId,
                 message: msgText,
                 time: new Date().toLocaleTimeString()
             };
 
             messagesLog.unshift(newAlert);
-            renderMessages();
             
             alert("¡Alerta enviada con éxito! El sistema notificó de forma segura al propietario.");
             document.getElementById('finder-message').value = "";
+            
+            // Cambiar a vista de propietario para ver la alerta que acaba de llegar
             switchView('owner');
+            renderMessages();
         }
 
         function renderMessages() {
@@ -247,10 +259,9 @@
             
             badge.innerText = messagesLog.length;
 
-            if (messagesLog.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 text-slate-500 text-sm border border-dashed border-slate-800 rounded-xl">Aún no hay alertas. Si alguien encuentra tus llaves y escanea el QR, aparecerá aquí al instante.</div>`;
-                return;
-            }
+            if (messagesLog.length === 0) return;
+
+            const savedData = JSON.parse(localStorage.getItem('keyspot_' + tagId) || "{}");
 
             container.innerHTML = messagesLog.map(item => `
                 <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col space-y-1">
@@ -260,7 +271,7 @@
                     </div>
                     <p class="text-sm text-slate-200 mt-1">"${escapeHtml(item.message)}"</p>
                     <div class="text-[11px] text-emerald-400 pt-1 flex items-center">
-                        <i class="fa-solid fa-circle-check mr-1"></i> Contacto vinculado: ${currentOwnerData.phone}
+                        <i class="fa-solid fa-circle-check mr-1"></i> Contacto vinculado: ${savedData.phone || 'N/A'}
                     </div>
                 </div>
             `).join('');
@@ -270,22 +281,6 @@
             return str.replace(/[&<>'"]/g, 
                 tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
             );
-        }
-
-        // Generar un QR inicial con el enlace oficial de GitHub al cargar
-        window.onload = function() {
-            const qrContainer = document.getElementById('qrcode');
-            const githubUrl = "https://mh6460285-cell.github.io/keyspot/?id=KEY-9021";
-            
-            new QRCode(qrContainer, {
-                text: githubUrl,
-                width: 130,
-                height: 130,
-                colorDark: "#020617",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-            document.getElementById('preview-url-text').innerText = githubUrl;
         }
     </script>
 </body>
