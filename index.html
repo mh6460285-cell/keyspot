@@ -91,7 +91,7 @@
                     </p>
                     <div class="pt-2">
                         <span class="text-xs font-mono bg-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg border border-slate-800">
-                            Enlace simulado: <span id="preview-url-text"></span>
+                            Enlace real: <span id="preview-url-text"></span>
                         </span>
                     </div>
                 </div>
@@ -205,15 +205,14 @@
             const previewCard = document.getElementById('tag-preview-card');
             previewCard.classList.remove('hidden');
 
-            // Generar URL real simulada para el QR
-            const simulatedUrl = `https://keyspot.app/scan?id=${currentOwnerData.id}`;
+            // URL real con GitHub Pages
+            const simulatedUrl = `https://mh6460285-cell.github.io/keyspot/?id=${currentOwnerData.id}`;
             document.getElementById('preview-url-text').innerText = simulatedUrl;
 
-            // Limpiar QR anterior y generar uno nuevo
+            // Limpiar QR anterior y generar uno nuevo con la URL real de GitHub
             const qrContainer = document.getElementById('qrcode');
             qrContainer.innerHTML = "";
             
-            // Creamos el QR que al escanearse con la cámara abrirá directamente la vista Buscador en la app
             new QRCode(qrContainer, {
                 text: simulatedUrl,
                 width: 130,
@@ -273,18 +272,20 @@
             );
         }
 
-        // Generar un QR inicial de prueba al cargar
+        // Generar un QR inicial con el enlace oficial de GitHub al cargar
         window.onload = function() {
             const qrContainer = document.getElementById('qrcode');
+            const githubUrl = "https://mh6460285-cell.github.io/keyspot/?id=KEY-9021";
+            
             new QRCode(qrContainer, {
-                text: "https://keyspot.app/scan?id=KEY-9021",
+                text: githubUrl,
                 width: 130,
                 height: 130,
                 colorDark: "#020617",
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             });
-            document.getElementById('preview-url-text').innerText = "https://keyspot.app/scan?id=KEY-9021";
+            document.getElementById('preview-url-text').innerText = githubUrl;
         }
     </script>
 </body>
