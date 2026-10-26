@@ -3,152 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Key-Spot | Sistema Inteligente de Llaveros</title>
-    <!-- Tailwind CSS para diseño moderno -->
+    <title>Key-Spot | Sistema Inteligente de Llaveros en la Nube</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Librería para generar códigos QR -->
+    <!-- QRCode.js -->
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <!-- FontAwesome para iconos -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #09090b; color: #f8fafc; }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between font-sans">
+<body class="min-h-screen flex flex-col justify-between font-sans selection:bg-cyan-500 selection:text-slate-950">
 
-    <!-- Header -->
-    <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50">
+    <!-- Header Profesional -->
+    <header class="bg-[#121214] border-b border-slate-800 p-4 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
         <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="bg-cyan-500 text-slate-950 p-2 rounded-lg font-black text-xl">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-cyan-500 to-blue-600 text-slate-950 p-2.5 rounded-xl font-black text-xl shadow-lg shadow-cyan-500/20">
                     <i class="fa-solid fa-key"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold tracking-wider text-cyan-400">KEY-SPOT</h1>
-                    <p class="text-xs text-slate-400">Llavero Inteligente Pasivo con QR</p>
+                    <h1 class="text-xl font-extrabold tracking-wider text-cyan-400">KEY-SPOT</h1>
+                    <p class="text-[11px] text-slate-400 font-medium">Plataforma IoT de Recuperación Pasiva</p>
                 </div>
             </div>
             <div class="flex space-x-2">
-                <button onclick="switchView('owner')" id="btn-owner" class="px-4 py-2 text-sm font-semibold rounded-lg bg-cyan-500 text-slate-950 transition shadow-lg shadow-cyan-500/20">
-                    <i class="fa-solid fa-user-gear mr-1"></i> Panel Propietario
+                <button onclick="switchView('owner')" id="btn-owner" class="px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded-xl bg-cyan-500 text-slate-950 transition shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-shield-halved mr-1"></i> Propietario
                 </button>
-                <button onclick="switchView('finder')" id="btn-finder" class="px-4 py-2 text-sm font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">
-                    <i class="fa-solid fa-magnifying-glass mr-1"></i> Vista Buscador
+                <button onclick="switchView('finder')" id="btn-finder" class="px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 transition">
+                    <i class="fa-solid fa-hands-holding-child mr-1"></i> Buscador
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="max-w-4xl mx-auto p-4 w-full flex-grow my-6">
+    <!-- Main Container -->
+    <main class="max-w-4xl mx-auto p-4 w-full flex-grow my-6 space-y-6">
 
-        <!-- VISTA PROPIETARIO (Registro Inicial) -->
+        <!-- VISTA PROPIETARIO / REGISTRO -->
         <div id="view-owner" class="space-y-6">
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-                <h2 class="text-lg font-bold text-cyan-300 mb-2">
-                    <i class="fa-solid fa-sliders mr-2"></i> Activación y Configuración de tu Llavero
-                </h2>
-                <p class="text-sm text-slate-400 mb-6">
-                    Ingresa tus datos de contacto alternativos. Esta es la primera configuración (registro del llavero nuevo).
-                </p>
+            <div class="bg-[#121214] border border-slate-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="p-2 bg-cyan-500/10 text-cyan-400 rounded-lg border border-cyan-500/20">
+                        <i class="fa-solid fa-fingerprint text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-cyan-300" id="owner-panel-title">Activación de Placa Key-Spot</h2>
+                        <p class="text-xs text-slate-400" id="owner-panel-subtitle">Registra tus datos de contacto para asociarlos al hardware.</p>
+                    </div>
+                </div>
 
-                <form id="owner-form" onsubmit="registerOwner(event)" class="space-y-4">
+                <form id="owner-form" onsubmit="saveOwnerData(event)" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">ID de Llavero (Serie)</label>
-                            <input type="text" id="tag-id" value="KEY-9021" readonly class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-300 text-sm font-mono focus:outline-none">
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Identificador Único (UID)</label>
+                            <input type="text" id="tag-id" value="KEY-9021" readonly class="w-full bg-[#09090b] border border-slate-800 rounded-xl px-4 py-2.5 text-cyan-400 text-sm font-mono focus:outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Tu Apodo o Nombre</label>
-                            <input type="text" id="owner-name" required placeholder="Ej. Miguel H." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition">
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Nombre o Alias del Dueño</label>
+                            <input type="text" id="owner-name" required placeholder="Ej. Miguel Hernández" class="w-full bg-[#09090b] border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Teléfono o WhatsApp de Contacto</label>
-                            <input type="tel" id="owner-phone" required placeholder="55 1234 5678" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition">
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Teléfono / WhatsApp de Contacto</label>
+                            <input type="tel" id="owner-phone" required placeholder="55 2395 6402" class="w-full bg-[#09090b] border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Correo Electrónico Alternativo</label>
-                            <input type="email" id="owner-email" required placeholder="tucorreo@email.com" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition">
+                            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Correo de Respaldo</label>
+                            <input type="email" id="owner-email" required placeholder="miguel@keyspot.local" class="w-full bg-[#09090b] border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition">
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full mt-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold py-3 px-6 rounded-xl transition shadow-lg shadow-cyan-500/25 flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-qrcode"></i>
-                        <span>Activar y Registrar Llavero</span>
+                    <button type="submit" class="w-full mt-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold py-3 px-6 rounded-xl transition shadow-lg shadow-cyan-500/20 flex items-center justify-center space-x-2 text-sm uppercase tracking-wider">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>Guardar y Vincular en la Nube</span>
                     </button>
                 </form>
             </div>
 
-            <!-- Previsualización del Llavero Físico y QR -->
-            <div id="tag-preview-card" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+            <!-- Previsualización del Hardware y QR -->
+            <div id="tag-preview-card" class="hidden bg-[#121214] border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="space-y-3 text-center md:text-left">
-                    <span class="bg-cyan-500/10 text-cyan-400 text-xs font-semibold px-3 py-1 rounded-full border border-cyan-500/20">
-                        ¡Llavero Activado con Éxito!
+                    <span class="bg-emerald-500/10 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full border border-emerald-500/20 inline-flex items-center">
+                        <i class="fa-solid fa-circle-check mr-1.5 text-[10px]"></i> Sincronizado Exitosamente
                     </span>
-                    <h3 class="text-xl font-bold text-slate-100">Tu Placa Física Key-Spot</h3>
-                    <p class="text-sm text-slate-400 max-w-sm">
-                        Este código QR ya está vinculado. Si lo vuelves a escanear, ahora abrirá directo la vista de rescate.
+                    <h3 class="text-lg font-bold text-slate-100">Código QR del Llavero Activo</h3>
+                    <p class="text-xs text-slate-400 max-w-sm leading-relaxed">
+                        Este código ya está enlazado a tu perfil remoto. Al ser escaneado por terceros, abrirá directamente el canal seguro de rescate.
                     </p>
-                    <div class="pt-2">
-                        <span class="text-xs font-mono bg-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg border border-slate-800">
-                            Enlace real: <span id="preview-url-text"></span>
+                    <div class="pt-1">
+                        <span class="text-[11px] font-mono bg-[#09090b] text-cyan-400 px-3 py-1.5 rounded-lg border border-slate-800 block truncate max-w-sm">
+                            URL: <span id="preview-url-text"></span>
                         </span>
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl shadow-inner flex flex-col items-center justify-center">
-                    <div id="qrcode" class="w-36 h-36 flex items-center justify-center"></div>
-                    <span class="text-[10px] text-slate-900 font-bold mt-2 uppercase tracking-widest">Escanea para reportar</span>
+                <div class="bg-white p-4 rounded-2xl shadow-xl flex flex-col items-center justify-center border-4 border-slate-800">
+                    <div id="qrcode" class="w-32 h-32 flex items-center justify-center"></div>
+                    <span class="text-[9px] text-slate-950 font-extrabold mt-2 uppercase tracking-widest">Key-Spot Secure</span>
                 </div>
             </div>
 
-            <!-- Panel de Notificaciones en Vivo -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+            <!-- Panel de Alertas en Tiempo Real -->
+            <div class="bg-[#121214] border border-slate-800 rounded-2xl p-6 shadow-2xl">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-md font-bold text-slate-200">
-                        <i class="fa-solid fa-bell text-yellow-400 mr-2"></i> Alertas de Rastreo Recibidas
+                    <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center">
+                        <i class="fa-solid fa-satellite-dish text-cyan-400 mr-2"></i> Registro de Alertas Recibidas
                     </h3>
-                    <span id="notification-badge" class="bg-red-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">0</span>
+                    <span id="notification-badge" class="bg-cyan-500 text-slate-950 text-xs font-extrabold px-2.5 py-0.5 rounded-full shadow-md shadow-cyan-500/30">0</span>
                 </div>
                 <div id="notifications-container" class="space-y-3">
-                    <div class="text-center py-6 text-slate-500 text-sm border border-dashed border-slate-800 rounded-xl">
-                        Aún no hay alertas. Si alguien encuentra tus llaves y escanea el QR, aparecerá aquí al instante.
+                    <div class="text-center py-8 text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">
+                        Esperando reportes de proximidad. Si alguien escanea tu llavero perdido, aparecerá aquí al instante.
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- VISTA BUSCADOR (Buen Samaritano - Alerta) -->
+        <!-- VISTA BUSCADOR (Buen Samaritano) -->
         <div id="view-finder" class="hidden space-y-6">
-            <div class="bg-gradient-to-br from-slate-900 to-slate-950 border border-cyan-500/30 rounded-2xl p-6 shadow-2xl text-center max-w-lg mx-auto">
-                <div class="w-16 h-16 bg-cyan-500/10 text-cyan-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl border border-cyan-500/30">
-                    <i class="fa-solid fa-key"></i>
+            <div class="bg-gradient-to-br from-[#121214] to-slate-950 border border-cyan-500/30 rounded-2xl p-6 shadow-2xl text-center max-w-lg mx-auto relative">
+                <div class="w-14 h-14 bg-cyan-500/10 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl border border-cyan-500/30 shadow-lg shadow-cyan-500/10">
+                    <i class="fa-solid fa-hands-holding-circle"></i>
                 </div>
-                <h2 class="text-xl font-bold text-slate-100 mb-1">¡Has encontrado unas llaves Key-Spot!</h2>
-                <p class="text-sm text-slate-400 mb-6">
-                    Este llavero ya está registrado. Envía un mensaje anónimo al propietario para coordinar la devolución.
+                <h2 class="text-xl font-extrabold text-slate-100 mb-1">¡Has encontrado un Key-Spot!</h2>
+                <p class="text-xs text-slate-400 mb-6 leading-relaxed">
+                    Estás escaneando un llavero protegido. Puedes enviar una alerta anónima segura al propietario sin revelar datos personales.
                 </p>
 
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 mb-6 text-left space-y-2">
+                <div class="bg-[#09090b] border border-slate-800 rounded-xl p-4 mb-6 text-left space-y-2.5">
                     <div class="flex justify-between text-xs text-slate-400">
-                        <span>Propietario registrado:</span>
-                        <span id="finder-owner-name" class="text-cyan-400 font-semibold">Miguel H.</span>
+                        <span>Propietario Asociado:</span>
+                        <span id="finder-owner-name" class="text-cyan-400 font-bold">Cargando...</span>
                     </div>
                     <div class="flex justify-between text-xs text-slate-400">
-                        <span>ID de Llavero:</span>
-                        <span id="finder-tag-id" class="text-slate-200 font-mono">KEY-9021</span>
+                        <span>Identificador de Placa:</span>
+                        <span id="finder-tag-id" class="text-slate-200 font-mono font-bold">KEY-9021</span>
                     </div>
                 </div>
 
-                <form onsubmit="sendFinderMessage(event)" class="space-y-4 text-left">
+                <form onsubmit="sendFinderAlert(event)" class="space-y-4 text-left">
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">¿Dónde las encontraste o cómo te contactan?</label>
-                        <textarea id="finder-message" rows="3" required placeholder="Ej. Las dejé con el encargado de la cafetería o escríbeme..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-slate-100 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition"></textarea>
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">¿Dónde están o cómo te contactan?</label>
+                        <textarea id="finder-message" rows="3" required placeholder="Ej. Las dejé en recepción del edificio o contáctame por este medio..." class="w-full bg-[#09090b] border border-slate-800 rounded-xl p-3 text-slate-100 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none transition"></textarea>
                     </div>
 
-                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 px-6 rounded-xl transition shadow-lg shadow-emerald-500/25 flex items-center justify-center space-x-2">
+                    <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold py-3 px-6 rounded-xl transition shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2 text-sm uppercase tracking-wider">
                         <i class="fa-solid fa-paper-plane"></i>
-                        <span>Enviar Alerta Anónima al Dueño</span>
+                        <span>Transmitir Alerta Segura</span>
                     </button>
                 </form>
             </div>
@@ -157,40 +165,55 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
-        Key-Spot Project &bull; Plan de Desarrollo de Producto (Ixtapaluca, 2026)
+    <footer class="bg-[#121214] border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+        Key-Spot Architecture &bull; Ixtapaluca, Estado de México (2026)
     </footer>
 
-    <!-- Script de control inteligente con Memoria Local -->
+    <!-- Lógica de Inteligencia Global -->
     <script>
-        const tagId = "KEY-9021";
-        let messagesLog = [];
+        // Obtener ID desde la URL (Ej: index.html?id=KEY-9021)
+        const urlParams = new URLSearchParams(window.location.search);
+        const tagId = urlParams.get('id') || "KEY-9021";
 
-        // Al cargar la página, verificamos si este llavero ya fue registrado en este navegador
+        // Claves maestras simuladas en almacenamiento en la nube global (localStorage sincronizado por ID)
+        const dbKey = 'keyspot_cloud_' + tagId;
+        const alertsKey = 'keyspot_alerts_' + tagId;
+
         window.onload = function() {
-            const savedData = localStorage.getItem('keyspot_' + tagId);
-            const githubUrl = "https://mh6460285-cell.github.io/keyspot/?id=" + tagId;
+            document.getElementById('tag-id').value = tagId;
+            document.getElementById('finder-tag-id').innerText = tagId;
 
-            // Generar QR inicial
+            const savedOwner = localStorage.getItem(dbKey);
+            const githubBaseUrl = "https://mh6460285-cell.github.io/keyspot/?id=" + tagId;
+
+            // Generar Código QR visual
             const qrContainer = document.getElementById('qrcode');
             new QRCode(qrContainer, {
-                text: githubUrl,
-                width: 130,
-                height: 130,
-                colorDark: "#020617",
+                text: githubBaseUrl,
+                width: 120,
+                height: 120,
+                colorDark: "#09090b",
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             });
-            document.getElementById('preview-url-text').innerText = githubUrl;
+            document.getElementById('preview-url-text').innerText = githubBaseUrl;
 
-            if (savedData) {
-                // Si ya está registrado, mandamos directo al usuario a la vista de buscador / alerta
-                const ownerInfo = JSON.parse(savedData);
-                document.getElementById('finder-owner-name').innerText = ownerInfo.name;
-                document.getElementById('finder-tag-id').innerText = tagId;
-                switchView('finder');
+            // Comportamiento Inteligente Automático
+            if (savedOwner) {
+                // Si ya está registrado en la nube, verificar si venimos como buscador o dueño
+                const ownerData = JSON.parse(savedOwner);
+                document.getElementById('finder-owner-name').innerText = ownerData.name;
+
+                // Si la URL trae parámetro o queremos que escaneen directo como buscador
+                if (urlParams.has('action') && urlParams.get('action') === 'finder') {
+                    switchView('finder');
+                } else {
+                    // Por defecto si alguien ajeno lo escanea sin token de dueño, abrir vista buscador
+                    // Para pruebas locales, permitimos alternar con los botones superiores
+                    loadAlerts();
+                }
             } else {
-                // Si es virgen (primera vez), muestra el panel para registrarse
+                // Si es virgen, mostrar registro
                 switchView('owner');
             }
         };
@@ -204,17 +227,21 @@
             if (view === 'owner') {
                 ownerView.classList.remove('hidden');
                 finderView.classList.add('hidden');
-                btnOwner.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-cyan-500 text-slate-950 transition shadow-lg shadow-cyan-500/20";
-                btnFinder.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+                btnOwner.className = "px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded-xl bg-cyan-500 text-slate-950 transition shadow-lg shadow-cyan-500/20";
+                btnFinder.className = "px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+                loadAlerts();
             } else {
                 ownerView.classList.add('hidden');
                 finderView.classList.remove('hidden');
-                btnFinder.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-cyan-500 text-slate-950 transition shadow-lg shadow-cyan-500/20";
-                btnOwner.className = "px-4 py-2 text-sm font-semibold rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+                btnFinder.className = "px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded-xl bg-cyan-500 text-slate-950 transition shadow-lg shadow-cyan-500/20";
+                btnOwner.className = "px-3.5 py-2 text-xs font-bold uppercase tracking-wider rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+                
+                const savedOwner = JSON.parse(localStorage.getItem(dbKey) || '{"name":"Propietario Key-Spot"}');
+                document.getElementById('finder-owner-name').innerText = savedOwner.name;
             }
         }
 
-        function registerOwner(e) {
+        function saveOwnerData(e) {
             e.preventDefault();
             const ownerData = {
                 id: tagId,
@@ -223,55 +250,59 @@
                 email: document.getElementById('owner-email').value
             };
 
-            // Guardar en la memoria local del navegador (simulando base de datos)
-            localStorage.setItem('keyspot_' + tagId, JSON.stringify(ownerData));
+            localStorage.setItem(dbKey, JSON.stringify(ownerData));
+            
+            // Mostrar tarjeta con QR listo
+            document.getElementById('tag-preview-card').classList.remove('hidden');
+            document.getElementById('owner-panel-title').innerText = "¡Llavero Registrado con Éxito!";
+            document.getElementById('owner-panel-subtitle').innerText = "Tu hardware ya está sincronizado en el sistema.";
 
-            // Mostrar tarjeta de éxito con el QR listo
-            const previewCard = document.getElementById('tag-preview-card');
-            previewCard.classList.remove('hidden');
-
-            alert("¡Llavero registrado con éxito! A partir de ahora, cualquier escaneo abrirá la vista de rescate.");
+            alert("¡Registro guardado correctamente en la nube local!");
         }
 
-        function sendFinderMessage(e) {
+        function sendFinderAlert(e) {
             e.preventDefault();
-            const msgText = document.getElementById('finder-message').value;
+            const message = document.getElementById('finder-message').value;
             
+            let alerts = JSON.parse(localStorage.getItem(alertsKey) || '[]');
             const newAlert = {
-                id: tagId,
-                message: msgText,
-                time: new Date().toLocaleTimeString()
+                message: message,
+                time: new Date().toLocaleTimeString(),
+                date: new Date().toLocaleDateString()
             };
 
-            messagesLog.unshift(newAlert);
-            
-            alert("¡Alerta enviada con éxito! El sistema notificó de forma segura al propietario.");
+            alerts.unshift(newAlert);
+            localStorage.setItem(alertsKey, JSON.stringify(alerts));
+
+            alert("¡Alerta transmitida con éxito! El dueño ha sido notificado en su panel.");
             document.getElementById('finder-message').value = "";
             
-            // Cambiar a vista de propietario para ver la alerta que acaba de llegar
+            // Cambiar a vista de propietario para demostrar la recepción
             switchView('owner');
-            renderMessages();
         }
 
-        function renderMessages() {
+        function loadAlerts() {
             const container = document.getElementById('notifications-container');
             const badge = document.getElementById('notification-badge');
-            
-            badge.innerText = messagesLog.length;
+            const alerts = JSON.parse(localStorage.getItem(alertsKey) || '[]');
+            const savedOwner = JSON.parse(localStorage.getItem(dbKey) || '{}');
 
-            if (messagesLog.length === 0) return;
+            badge.innerText = alerts.length;
 
-            const savedData = JSON.parse(localStorage.getItem('keyspot_' + tagId) || "{}");
+            if (alerts.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">Esperando reportes de proximidad. Si alguien escanea tu llavero perdido, aparecerá aquí al instante.</div>`;
+                return;
+            }
 
-            container.innerHTML = messagesLog.map(item => `
-                <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex flex-col space-y-1">
-                    <div class="flex justify-between items-center text-xs text-cyan-400 font-semibold">
-                        <span><i class="fa-solid fa-triangle-exclamation mr-1"></i> Llavero: ${item.id}</span>
-                        <span class="text-slate-500">${item.time}</span>
+            container.innerHTML = alerts.map(item => `
+                <div class="bg-[#09090b] border border-slate-800 p-4 rounded-xl flex flex-col space-y-2 shadow-md">
+                    <div class="flex justify-between items-center text-xs text-cyan-400 font-bold">
+                        <span><i class="fa-solid fa-triangle-exclamation mr-1.5 text-yellow-400"></i> Alerta de Rescate (${tagId})</span>
+                        <span class="text-slate-500 font-mono text-[11px]">${item.date} - ${item.time}</span>
                     </div>
-                    <p class="text-sm text-slate-200 mt-1">"${escapeHtml(item.message)}"</p>
-                    <div class="text-[11px] text-emerald-400 pt-1 flex items-center">
-                        <i class="fa-solid fa-circle-check mr-1"></i> Contacto vinculado: ${savedData.phone || 'N/A'}
+                    <p class="text-xs text-slate-200 bg-slate-900/60 p-2.5 rounded-lg border border-slate-800/80">"${escapeHtml(item.message)}"</p>
+                    <div class="text-[11px] text-emerald-400 font-semibold flex items-center pt-0.5">
+                        <i class="fa-solid fa-square-check mr-1.5"></i> Teléfono vinculado para contacto: ${savedOwner.phone || 'Registrado'}
                     </div>
                 </div>
             `).join('');
